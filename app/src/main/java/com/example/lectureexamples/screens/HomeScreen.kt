@@ -1,6 +1,7 @@
 package com.example.lectureexamples.screens
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,8 +12,7 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,20 +28,62 @@ import com.example.lectureexamples.models.Movie
 import com.example.lectureexamples.models.getMovies
 
 @Composable
+fun AppTopBar(navController: NavController) {
+
+    var showMenu by remember {
+        mutableStateOf(false)
+    }
+
+    TopAppBar(
+        title = { Text(text = "Movies") },
+        actions = {
+
+            // 3 vertical dots icon
+            IconButton(onClick = {
+                showMenu = !showMenu
+            }) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "Open Options"
+                )
+            }
+            // drop down menu
+            DropdownMenu(
+                modifier = Modifier.width(width = 150.dp),
+                expanded = showMenu,
+                onDismissRequest = { showMenu=false}) {
+                DropdownMenuItem(onClick = { /*TODO*/ }) {
+                    Icon(imageVector = Icons.Filled.Favorite, contentDescription = "Favorite")
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(text = "Favorites")
+                }
+
+            }
+        })}
+
+
+
+
+@Composable
 fun HomeScreen(navController: NavController) {
     // A surface container using the 'background' color from the theme
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
+
         Column {
+            AppTopBar(navController)
             Greeting()
-            Text(
+            /*Text(
                 style = MaterialTheme.typography.h6,
                 text= "Movie List"
             )
+
+             */
             MyList(navController)
         }
+
         //MyList()
         //Greeting()
         //WelcomeText(modifier = Modifier.padding(16.dp), text = "welcome to my app!")
@@ -67,8 +109,29 @@ fun MyList(navController: NavController = rememberNavController(),
 }
 
 
+
+
+
+
+@Preview
+@Composable
+fun WelcomeText(modifier: Modifier = Modifier, text: String = "default") {
+    Row(
+        modifier = modifier
+            .padding(16.dp)
+            .background(Color.Blue)
+            .fillMaxWidth()
+    ) {
+        Text(modifier = modifier, text = "Hola")
+        Text(text = text)
+    }
+
+}
 @Composable
 fun MovieRow(movie: Movie, onItemClick: (String) -> Unit = {}) {
+    var showMoreInfo by remember {
+        mutableStateOf(false)
+    }
     Card(modifier = Modifier
         .fillMaxWidth()
         .padding(5.dp)
@@ -106,32 +169,36 @@ fun MovieRow(movie: Movie, onItemClick: (String) -> Unit = {}) {
             ) {
                 Text(movie.title, style = MaterialTheme.typography.h6)
                 Icon(
-                    imageVector = Icons.Default.KeyboardArrowUp,
-                    contentDescription = "Show details")
+                    imageVector = if (showMoreInfo) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = "arrowUp",
+                    modifier = Modifier.clickable { showMoreInfo = !showMoreInfo })
             }
-        }
-    }
+
+            Column(modifier = Modifier.fillMaxWidth()) {
+                AnimatedVisibility(visible = showMoreInfo) {
+                    Column {
+
+                        Text(text = "Director: ${movie.director}", style = MaterialTheme.typography.caption)
+                        Text(text = "Released: ${movie.year}", style = MaterialTheme.typography.caption)
+                        Text(text = "Genre: ${movie.genre}", style = MaterialTheme.typography.caption)
+                        Text(text = "Actors: ${movie.actors}", style = MaterialTheme.typography.caption)
+                        Text(text = "Rating: ${movie.rating}", style = MaterialTheme.typography.caption)
+                        Divider(modifier = Modifier.padding(4.dp))
+                        Text(text = "Plot: ${movie.plot}", style = MaterialTheme.typography.caption)
+
+                    }
+
+                }
+            }
+
+        }}
 }
 
-@Preview
-@Composable
-fun WelcomeText(modifier: Modifier = Modifier, text: String = "default") {
-    Row(
-        modifier = modifier
-            .padding(16.dp)
-            .background(Color.Blue)
-            .fillMaxWidth()
-    ) {
-        Text(modifier = modifier, text = "Hola")
-        Text(text = text)
-    }
-
-}
 
 @Preview
 @Composable
 fun Greeting() {
-    Column(modifier = Modifier.padding(16.dp)) {
+    /*Column(modifier = Modifier.padding(16.dp)) {
         var name by remember {
             mutableStateOf("")
         }
@@ -178,4 +245,6 @@ fun Greeting() {
 
          */
     }
+
+     */
 }

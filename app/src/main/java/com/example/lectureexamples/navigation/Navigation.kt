@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.lectureexamples.screens.AppTopBar
 import com.example.lectureexamples.screens.DetailScreen
 import com.example.lectureexamples.screens.HomeScreen
 
@@ -14,6 +15,10 @@ fun Navigation(){
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "home") {
+
+        composable(route = "home"){
+            AppTopBar(navController)
+        }
         composable(route = "home") {
             HomeScreen(navController)
         }

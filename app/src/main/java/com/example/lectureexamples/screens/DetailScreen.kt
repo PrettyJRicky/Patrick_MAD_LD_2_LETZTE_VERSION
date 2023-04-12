@@ -9,6 +9,7 @@ fun DetailScreen(navController: NavController, movieId: String?) {
 
     movieId?.let {
         Text(text = "Hello Detailscreen $movieId")
+
     }
 
 
